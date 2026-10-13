@@ -94,7 +94,7 @@ def run_task5():
         dns_R_plus = -dns_stress[:, 5]  
 
         # 4. PLOTTING COMPARISONS
-        fig, axes = plt.subplots(1, 2, figsize=(7.6, 3.4), constrained_layout=True)
+        fig, axes = plt.subplots(1, 3, figsize=(11.4, 3.4), constrained_layout=True)
 
         # Velocity Comparison
         axes[0].plot(
@@ -139,19 +139,29 @@ def run_task5():
         axes[1].set_ylabel(r"$-\overline{u'v'}/u_\tau^2$")
         axes[1].set_xlim(0, 100)
         axes[1].set_ylim(bottom=0)
+
+        # Zoomed in plot for behavior close to the wall
+        axes[2].plot(model_old["y_plus"], model_old["reynolds_stress"], "--", color="#A65628", linewidth=1.4)
+        axes[2].plot(model_driest["y_plus"], model_driest["reynolds_stress"], "-", color="#286090", linewidth=1.4)
+        axes[2].plot(dns_stress_y_plus, dns_R_plus, "o", color="black", markersize=3, markerfacecolor="none", markeredgewidth=0.7)
         
+        axes[2].set_title(f"(c) Reynolds shear stress close to the wall ($Re_\\tau={re_tau}$)", loc="left")
+        axes[2].set_xlabel(r"$y^+$")
+        axes[2].set_xlim(0, 50) 
+        axes[2].set_ylim(bottom=0)
+
     
         for ax in axes:
             ax.minorticks_on()
             ax.tick_params(which="both", direction="in", top=True, right=True)
 
-        # Save velocity plots without overwriting other cases
+        
         for extension in ("png", "svg"):
             figure_path = output_folder / f"task5_comparison_{re_tau}.{extension}"
             fig.savefig(figure_path, dpi=600, bbox_inches="tight")
             print(f"Figure saved to: {figure_path}")
         
-        # Close figure to free memory during the loop
+    
         plt.close(fig)
 
 if __name__ == "__main__":
